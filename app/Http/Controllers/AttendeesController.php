@@ -21,7 +21,7 @@ class AttendeesController extends Controller
         $attendees = Attendee::all();
 
         return response()->json([
-            'data' => $attendees->toArray()
+            'data' => $this->transformCollection($attendees->toArray())
         ], 200);
     }
 
@@ -66,7 +66,7 @@ class AttendeesController extends Controller
         }
 
         return response()->json([
-            'data' => $attendee->toArray()
+            'data' => $this->transform($attendee->toArray())
         ], 200);
 
     }
@@ -103,5 +103,20 @@ class AttendeesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function transformCollection($attendees)
+    {
+        return array_map([$this, 'transform'], $attendees->toArray());
+    }
+
+    private function transform($attendee)
+    {
+        return [
+            'first_name' => $attendee['first_name'],
+            'last_name'  => $attendee['last_name'],
+            'suffix'     => $attendee['suffix'],
+            'identifier' => $attendee['identifier'],
+        ];
     }
 }
