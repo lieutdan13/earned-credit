@@ -18,7 +18,11 @@ class AttendeesController extends Controller
      */
     public function index()
     {
-        return Attendee::all();
+        $attendees = Attendee::all();
+
+        return response()->json([
+            'data' => $attendees->toArray()
+        ], 200);
     }
 
     /**
@@ -50,7 +54,21 @@ class AttendeesController extends Controller
      */
     public function show($id)
     {
-        //
+        $attendee = Attendee::find($id);
+
+        if(!$attendee)
+        {
+            return response()->json([
+                'error' => [
+                    'message' => 'Attendee does not exist'
+                ]
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => $attendee->toArray()
+        ], 200);
+
     }
 
     /**
