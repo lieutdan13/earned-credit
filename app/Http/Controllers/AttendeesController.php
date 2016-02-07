@@ -4,13 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
 use App\Attendee;
 use App\Transformers\AttendeeTransformer;
 
-class AttendeesController extends Controller
+class AttendeesController extends ApiController
 {
 
     protected $attendeeTransformer;
@@ -29,9 +26,9 @@ class AttendeesController extends Controller
     {
         $attendees = Attendee::all();
 
-        return response()->json([
+        return $this->respond([
             'data' => $this->attendeeTransformer->transformCollection($attendees->all())
-        ], 200);
+        ]);
     }
 
     /**
@@ -67,16 +64,12 @@ class AttendeesController extends Controller
 
         if(!$attendee)
         {
-            return response()->json([
-                'error' => [
-                    'message' => 'Attendee does not exist'
-                ]
-            ], 404);
+            return $this->respondNotFound('Attendee does not exist');
         }
 
-        return response()->json([
+        return $this->respond([
             'data' => $this->attendeeTransformer->transform($attendee)
-        ], 200);
+        ]);
 
     }
 
