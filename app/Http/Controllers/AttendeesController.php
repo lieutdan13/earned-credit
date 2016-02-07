@@ -8,9 +8,18 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Attendee;
+use App\Transformers\AttendeeTransformer;
 
 class AttendeesController extends Controller
 {
+
+    protected $attendeeTransformer;
+
+    function __construct(AttendeeTransformer $attendeeTransformer)
+    {
+        $this->attendeeTransformer = $attendeeTransformer;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +30,7 @@ class AttendeesController extends Controller
         $attendees = Attendee::all();
 
         return response()->json([
-            'data' => $this->transformCollection($attendees->toArray())
+            'data' => $this->attendeeTransformer->transformCollection($attendees->all())
         ], 200);
     }
 
@@ -66,7 +75,7 @@ class AttendeesController extends Controller
         }
 
         return response()->json([
-            'data' => $this->transform($attendee->toArray())
+            'data' => $this->attendeeTransformer->transform($attendee)
         ], 200);
 
     }
@@ -103,20 +112,5 @@ class AttendeesController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    private function transformCollection($attendees)
-    {
-        return array_map([$this, 'transform'], $attendees->toArray());
-    }
-
-    private function transform($attendee)
-    {
-        return [
-            'first_name' => $attendee['first_name'],
-            'last_name'  => $attendee['last_name'],
-            'suffix'     => $attendee['suffix'],
-            'identifier' => $attendee['identifier'],
-        ];
     }
 }
