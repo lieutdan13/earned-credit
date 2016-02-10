@@ -10,7 +10,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-Route::group(['prefix' => 'api/v1'], function()
+Route::group(['prefix' => 'api/v1', 'middleware' => 'api'], function()
 {
     Route::resource('attendee', 'AttendeesController');
 });

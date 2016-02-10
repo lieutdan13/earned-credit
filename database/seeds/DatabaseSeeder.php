@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Attendee;
+use App\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,7 +14,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Attendee::truncate();
-        // $this->call(UserTableSeeder::class);
+        User::truncate();
+
         $this->call(AttendeesTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
     }
 }
