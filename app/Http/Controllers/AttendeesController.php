@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 
 use App\Attendee;
 use App\Transformers\AttendeeTransformer;
@@ -49,7 +50,13 @@ class AttendeesController extends ApiController
      */
     public function store(Request $request)
     {
-        //
+        if(!Input::get('first_name') or !Input::get('last_name') or !Input::get('identifier'))
+        {
+            return $this->respondUnprocessableEntity('Parameters failed validation for an attendee.');
+        }
+
+        Attendee::create(Input::all());
+        return $this->respondCreated('Attendee successfully created.');
     }
 
     /**
