@@ -15,10 +15,10 @@ class CreateAttendeesTable extends Migration
         Schema::create('attendees', function($table)
         {
             $table->increments('id');
+            $table->string('identifier', 30);
             $table->string('first_name', 50);
             $table->string('last_name', 50);
             $table->string('suffix', 10)->nullable();
-            $table->string('identifier', 30);
             $table->timestamps();
             $table->softDeletes();
         });

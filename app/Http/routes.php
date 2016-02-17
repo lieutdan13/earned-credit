@@ -13,6 +13,10 @@
 Route::group(['prefix' => 'api/v1', 'middleware' => 'api'], function()
 {
     Route::resource('attendee', 'AttendeesController');
+    Route::get('attendee/{attendeeId}/counselor', 'CounselorsController@byAttendee');
+
+    Route::resource('counselor', 'CounselorsController');
+    Route::get('counselor/{counselorId}/attendees', 'AttendeesController@byCounselor');
 });
 /*
 |--------------------------------------------------------------------------
