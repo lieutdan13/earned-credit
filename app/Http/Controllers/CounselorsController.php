@@ -7,16 +7,16 @@ use Illuminate\Support\Facades\Input;
 
 use App\Attendee;
 use App\Counselor;
-use App\Transformers\AttendeeTransformer;
+use App\Transformers\CounselorTransformer;
 
-class AttendeesController extends ApiController
+class CounselorsController extends ApiController
 {
 
-    protected $attendeeTransformer;
+    protected $counselorTransformer;
 
-    function __construct(AttendeeTransformer $attendeeTransformer)
+    function __construct(CounselorTransformer $counselorTransformer)
     {
-        $this->attendeeTransformer = $attendeeTransformer;
+        $this->counselorTransformer = $counselorTransformer;
     }
 
     /**
@@ -26,24 +26,10 @@ class AttendeesController extends ApiController
      */
     public function index()
     {
-        $attendees = Attendee::all();
+        $counselors = Counselor::all();
 
         return $this->respond([
-            'data' => $this->attendeeTransformer->transformCollection($attendees->all())
-        ]);
-    }
-
-    /**
-     * Displays a listing of the attendees that the counselor has.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function byCounselor($counselorId = null)
-    {
-        $attendees = $counselorId ? Counselor::findOrFail($counselorId)->attendees->all() : [];
-
-        return $this->respond([
-            'data' => $this->attendeeTransformer->transformCollection($attendees)
+            'data' => $this->counselorTransformer->transformCollection($counselors->all())
         ]);
     }
 
@@ -65,13 +51,27 @@ class AttendeesController extends ApiController
      */
     public function store(Request $request)
     {
-        if(!Input::get('first_name') or !Input::get('last_name') or !Input::get('identifier'))
+        if(!Input::get('identifier') or !Input::get('first_name') or !Input::get('last_name'))
         {
-            return $this->respondUnprocessableEntity('Parameters failed validation for an attendee.');
+            return $this->respondUnprocessableEntity('Parameters failed validation for an counselor.');
         }
 
-        Attendee::create(Input::all());
-        return $this->respondCreated('Attendee successfully created.');
+        Counselor::create(Input::all());
+        return $this->respondCreated('Counselor successfully created.');
+    }
+
+    /**
+     * Displays the counselor that an attendee is assigned to.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function byAttendee($attendeeId = null)
+    {
+        $counselor = $attendeeId ? Attendee::findOrFail($attendeeId)->counselor : null;
+
+        return $this->respond([
+            'data' => $this->counselorTransformer->transform($counselor)
+        ]);
     }
 
     /**
@@ -82,15 +82,15 @@ class AttendeesController extends ApiController
      */
     public function show($id)
     {
-        $attendee = Attendee::find($id);
+        $counselor = Counselor::find($id);
 
-        if(!$attendee)
+        if(!$counselor)
         {
-            return $this->respondNotFound('Attendee does not exist');
+            return $this->respondNotFound('Counselor does not exist');
         }
 
         return $this->respond([
-            'data' => $this->attendeeTransformer->transform($attendee)
+            'data' => $this->counselorTransformer->transform($counselor)
         ]);
 
     }

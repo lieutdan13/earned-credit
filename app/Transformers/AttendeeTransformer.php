@@ -14,10 +14,10 @@ class AttendeeTransformer extends Transformer
     public function transform($item)
     {
         return [
+            'identifier' => $item['identifier'],
             'first_name' => $item['first_name'],
             'last_name'  => $item['last_name'],
             'suffix'     => $item['suffix'],
-            'identifier' => $item['identifier'],
         ];
     }
 
