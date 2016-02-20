@@ -12,11 +12,11 @@
 */
 Route::group(['prefix' => 'api/v1', 'middleware' => 'api'], function()
 {
-    Route::resource('attendee', 'AttendeesController');
-    Route::get('attendee/{attendeeId}/counselor', 'CounselorsController@byAttendee');
+    Route::resource('attendees', 'AttendeesController');
+    Route::get('attendees/{attendeeId}/counselor', 'CounselorsController@byAttendee');
 
-    Route::resource('counselor', 'CounselorsController');
-    Route::get('counselor/{counselorId}/attendees', 'AttendeesController@byCounselor');
+    Route::resource('counselors', 'CounselorsController');
+    Route::get('counselors/{counselorId}/attendees', 'AttendeesController@byCounselor');
 });
 /*
 |--------------------------------------------------------------------------
