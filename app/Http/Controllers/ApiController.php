@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Response as IlluminateResponse;
+use \Tymon\JWTAuth\JWTAuth;
 
 /**
  * Class ApiController
@@ -37,6 +38,16 @@ class ApiController extends Controller
         $this->statusCode = (int) $statusCode;
 
         return $this;
+    }
+
+    /**
+     * @param string $message
+     * @return mixed
+     */
+    public function respondBadRequestError($message = 'Bad Request!')
+    {
+        return $this->setStatusCode(IlluminateResponse::HTTP_BAD_REQUEST)
+            ->respondWithError($message);
     }
 
     /**
@@ -145,5 +156,19 @@ class ApiController extends Controller
     {
         return $this->setStatusCode(IlluminateResponse::HTTP_UNPROCESSABLE_ENTITY)
             ->respond(['message' => $message]);
+    }
+
+    /**
+     * 
+     */
+    public function getAuthenticatedUser()
+    {
+        if (! $user = JWTAuth::parseToken()->authenticate())
+        {
+            return $this->respondNotFound("user not found with given token");
+        }
+
+        // the token is valid and we have found the user via the sub claim
+        $this->user = $user;
     }
 }

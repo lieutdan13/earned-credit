@@ -48,9 +48,9 @@ abstract class ApiTester extends TestCase
      * @param array $parameters
      * @return mixed
      */
-    protected function getJson($uri, $method = 'GET', $parameters = [])
+    protected function getJson($uri, $method = 'GET', $parameters = [], $cookies = [], $files = [], $server = [])
     {
-        return json_decode($this->call($method, $uri, $parameters)->getContent());
+        return json_decode($this->call($method, $uri, $parameters, $cookies, $files, $server)->getContent());
     }
 
     /**

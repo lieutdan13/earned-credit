@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -10,8 +11,12 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::post('api/v1/auth', ['uses' => 'AuthenticateController@authenticate']);
+Route::post('api/v1/auth/refresh-token', ['uses' => 'AuthenticateController@refresh_token']);
+
 Route::group(['prefix' => 'api/v1', 'middleware' => 'api'], function()
 {
+
     Route::resource('attendees', 'AttendeesController');
     Route::get('attendees/{attendeeId}/counselor', 'CounselorsController@byAttendee');
 
