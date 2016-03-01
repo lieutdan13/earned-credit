@@ -53,6 +53,23 @@ abstract class ApiTester extends TestCase
         return json_decode($this->call($method, $uri, $parameters, $cookies, $files, $server)->getContent());
     }
 
+
+    /**
+     * @param \App\User $user
+     */
+    protected function headers($user = null)
+    {
+        $headers = ['Accept' => 'application/json'];
+
+        if (!is_null($user)) {
+            $token = JWTAuth::fromUser($user);
+            JWTAuth::setToken($token);
+            $headers['Authorization'] = 'Bearer '.$token;
+        }
+
+        return $headers;
+    }
+
     /**
      *
      */
