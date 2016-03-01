@@ -33,7 +33,8 @@ class Kernel extends HttpKernel
 
         'api' => [
             'throttle:60,1',
-            'auth.basic',
+            'jwt.auth',
+            //'jwt.refresh', //For single-use tokens
         ],
     ];
 
@@ -48,6 +49,8 @@ class Kernel extends HttpKernel
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+        'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 }
