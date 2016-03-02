@@ -24,7 +24,7 @@ class AttendeesTest extends ApiTester
         $this->times(5)->make('App\Attendee');
 
         //act
-        $this->getJson('/api/v1/attendees/');
+        $this->getJson('attendees');
 
         //assert
         $this->assertResponseOk();
@@ -39,7 +39,7 @@ class AttendeesTest extends ApiTester
         $this->make('App\Attendee');
 
         //act
-        $attendee = $this->getJson('/api/v1/attendees/1')->data;
+        $attendee = $this->getJson('attendees/1')->data;
 
         //assert
         $this->assertResponseOk();
@@ -52,7 +52,7 @@ class AttendeesTest extends ApiTester
     public function it_throws_a_404_if_an_attendee_is_not_found()
     {
         //act
-        $this->getJson('/api/v1/attendees/x');
+        $this->getJson('attendees/x');
 
         //assert
         $this->assertResponseStatus(404);
@@ -64,7 +64,7 @@ class AttendeesTest extends ApiTester
     public function it_creates_a_new_attendee_given_valid_parameters()
     {
         //act
-        $this->getJson('/api/v1/attendees', 'POST', $this->getStub());
+        $this->getJson('attendees', 'POST', $this->getStub());
 
         //assert
         $this->assertResponseStatus(201);
@@ -76,7 +76,7 @@ class AttendeesTest extends ApiTester
     public function it_throws_a_422_if_a_new_attendee_request_fails_validation()
     {
         //act
-        $this->getJson('/api/v1/attendees', 'POST');
+        $this->getJson('attendees', 'POST');
 
         //assert
         $this->assertResponseStatus(422);

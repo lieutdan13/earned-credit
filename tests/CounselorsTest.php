@@ -23,7 +23,7 @@ class CounselorsTest extends ApiTester
         $this->times(5)->make('App\Counselor');
 
         //act
-        $this->getJson('/api/v1/counselors/');
+        $this->getJson('counselors');
 
         //assert
         $this->assertResponseOk();
@@ -38,7 +38,7 @@ class CounselorsTest extends ApiTester
         $this->make('App\Counselor');
 
         //act
-        $counselor = $this->getJson('/api/v1/counselors/1')->data;
+        $counselor = $this->getJson('counselors/1')->data;
 
         //assert
         $this->assertResponseOk();
@@ -58,7 +58,7 @@ class CounselorsTest extends ApiTester
     public function it_throws_a_404_if_a_counselor_is_not_found()
     {
         //act
-        $this->getJson('/api/v1/counselors/x');
+        $this->getJson('counselors/x');
 
         //assert
         $this->assertResponseStatus(404);
@@ -70,7 +70,7 @@ class CounselorsTest extends ApiTester
     public function it_creates_a_new_counselor_given_valid_parameters()
     {
         //act
-        $this->getJson('/api/v1/counselors', 'POST', $this->getStub());
+        $this->getJson('counselors', 'POST', $this->getStub());
 
         //assert
         $this->assertResponseStatus(201);
@@ -82,7 +82,7 @@ class CounselorsTest extends ApiTester
     public function it_throws_a_422_if_a_new_counselor_request_fails_validation()
     {
         //act
-        $this->getJson('/api/v1/counselors', 'POST');
+        $this->getJson('counselors', 'POST');
 
         //assert
         $this->assertResponseStatus(422);

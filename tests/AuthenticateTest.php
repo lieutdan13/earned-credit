@@ -34,7 +34,7 @@ class AuthenticateTest extends ApiTester
             'password' => Hash::make($this->getStub()['password'])]);
 
         //act
-        $auth = $this->getJson('api/v1/auth', 'POST', $this->getStub());
+        $auth = $this->getJson('auth', 'POST', $this->getStub());
 
         //assert
         $this->assertResponseOk();
@@ -52,7 +52,7 @@ class AuthenticateTest extends ApiTester
             'password' => Hash::make($this->getStub()['password'])]);
 
         //act
-        $auth = $this->getJson('api/v1/auth', 'POST',
+        $auth = $this->getJson('auth', 'POST',
             ['email' => 'tester', 'password' => 'tester-incorrect']);
 
         //assert
@@ -62,7 +62,7 @@ class AuthenticateTest extends ApiTester
 
     /**
      * @disabled_test
-     * Testing api/v1/auth/refresh-token appears to not be possible with
+     * Testing auth/refresh-token appears to not be possible with
      * unit tests and should be tested with behavior tests.
      */
     public function it_authenticates_with_a_token_and_refreshes_the_token()
@@ -73,7 +73,7 @@ class AuthenticateTest extends ApiTester
             'password' => Hash::make($this->getStub()['password'])]);
 
         //act
-        $new_token = $this->getJson('api/v1/auth/refresh-token',
+        $new_token = $this->getJson('auth/refresh-token',
             'POST',
             [],
             [],
@@ -98,7 +98,7 @@ class AuthenticateTest extends ApiTester
             'password' => Hash::make($this->getStub()['password'])]);
 
         //act
-        $response = $this->getJson('api/v1/counselors', 'GET', ['token' => 'bad-token']); 
+        $response = $this->getJson('counselors', 'GET', ['token' => 'bad-token']);
 
         //assert
         $this->assertResponseStatus(400);
