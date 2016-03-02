@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Http\Controllers\ApiController;
 
 class Handler extends ExceptionHandler
 {
@@ -46,16 +47,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if (starts_with($request->requestUri, '/api/v1'))
-        {
-            $api = new ApiController();
-            if ($e instanceof Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-                return $api->respondUnauthorizedError("token expired");
-            } else if ($e instanceof Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-                return $api->respondBadRequestError("token invalid");
-            } else if ($e instanceof Tymon\JWTAuth\Exceptions\JWTException) {
-                return $api->respondUnauthorizedError("token absent");
-            }
+        $api = new ApiController();
+        if ($e instanceof Tymon\JWTAuth\Exceptions\TokenExpiredException) {
+            return $api->respondUnauthorizedError("token expired");
+        } else if ($e instanceof Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+            return $api->respondBadRequestError("token invalid");
+        } else if ($e instanceof Tymon\JWTAuth\Exceptions\JWTException) {
+            return $api->respondUnauthorizedError("token absent");
+        } else if ($e instanceof NotFoundHttpException) {
+            return $api->respondNotFound();
         }
 
         return parent::render($request, $e);
