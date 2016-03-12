@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Response as IlluminateResponse;
-use \Tymon\JWTAuth\JWTAuth;
+use JWTAuth;
 
 /**
  * Class ApiController
@@ -119,6 +119,9 @@ class ApiController extends Controller
      */
     public function respond($data, $headers = [])
     {
+        $data['token'] = (string) JWTAuth::getToken();
+        $data['status_code'] = $this->getStatusCode();
+        $headers['Authorization'] = "Bearer " . JWTAuth::getToken();
         return response()->json($data, $this->getStatusCode(), $headers);
     }
 
@@ -128,14 +131,19 @@ class ApiController extends Controller
      * @param $message
      * @return mixed
      */
-    public function respondWithError($message)
+    public function respondWithError($message, $extra_data=[])
     {
-        return $this->respond([
+        $response_data = [
             'error' => [
                 'message' => $message,
                 'status_code' => $this->getStatusCode()
             ]
-        ]);
+        ];
+        if (!empty($extra_data))
+        {
+            $response_data['extra'] = $extra_data;
+        }
+        return $this->respond($response_data);
     }
 
     /**
