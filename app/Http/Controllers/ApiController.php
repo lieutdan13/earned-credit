@@ -150,7 +150,7 @@ class ApiController extends Controller
      * @param $message
      * @return mixed
      */
-    protected function respondCreated($message)
+    protected function respondCreated($message = 'The resource has been created.')
     {
         return $this->setStatusCode(IlluminateResponse::HTTP_CREATED)
             ->respond(['message' => $message]);
@@ -163,7 +163,7 @@ class ApiController extends Controller
     protected function respondUnprocessableEntity($message)
     {
         return $this->setStatusCode(IlluminateResponse::HTTP_UNPROCESSABLE_ENTITY)
-            ->respond(['message' => $message]);
+            ->respondWithError($message);
     }
 
     /**

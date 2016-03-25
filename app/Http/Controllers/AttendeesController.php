@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Input;
 use App\Attendee;
 use App\Counselor;
 use App\Transformers\AttendeeTransformer;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AttendeesController extends ApiController
 {
@@ -48,16 +49,6 @@ class AttendeesController extends ApiController
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -86,24 +77,13 @@ class AttendeesController extends ApiController
 
         if(!$attendee)
         {
-            return $this->respondNotFound('Attendee does not exist');
+            return $this->respondNotFound('Attendee does not exist.');
         }
 
         return $this->respond([
             'data' => $this->attendeeTransformer->transform($attendee)
         ]);
 
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -116,6 +96,45 @@ class AttendeesController extends ApiController
     public function update(Request $request, $id)
     {
         //
+    }
+
+    /**
+     * Update the counselor associated with the attendee.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateCounselor(Request $request, $id)
+    {
+        $attendee = Attendee::find($id);
+
+        if(!$attendee)
+        {
+            return $this->respondNotFound('Attendee does not exist.');
+        }
+
+        $counselorId = Input::get('counselor_id');
+        if(!$counselorId)
+        {
+            return $this->respondUnprocessableEntity('Parameters failed validation for an attendee.');
+        }
+
+        try {
+            $newCounselor = Counselor::findOrFail($counselorId);
+        } catch (ModelNotFoundException $e) {
+            return $this->respondUnprocessableEntity('Counselor provided does not exist');
+        }
+
+        //We pass validation. Now softDelete the existing counselor and replace it.
+        $currentCounselor = $attendee->counselor;
+        if ($currentCounselor->id != $newCounselor->id)
+        {
+            $attendee->reassignCounselor($newCounselor->id);
+            return $this->respond(['message' => "The attendee/counselor assignment has been updated."]);
+        }
+
+        return $this->respond(['message' => "The attendee/counselor assignment remains unchanged."]);
     }
 
     /**
