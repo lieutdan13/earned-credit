@@ -1,3 +1,14 @@
-## TODO
-- Use `$table->softDeletes();` and `$table->timestamps();` on the attendees table
-- See [this Github project](https://github.com/rattfieldnz/laravel-incremental-api) for the API lessons
+#TODO
+- create a custom response class that returns the same json format with every request
+- create a custom middleware for JWT that handles JWT exceptions and responds with proper messages.
+- rename the project to be something more generic and clever
+  - attendance
+  - roll call
+  - assemble
+  - presence
+  - participation
+  - credit
+  - "Turnout"
+- make exception handling always respond with json
+- always include the token in the response
+- create a frontend using bootstrap and backbone.js

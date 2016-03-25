@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -10,22 +11,16 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::post('auth', ['uses' => 'AuthenticateController@authenticate']);
+Route::post('auth/refresh-token', ['uses' => 'AuthenticateController@refresh_token']);
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::group(['middleware' => 'api'], function()
+{
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| This route group applies the "web" middleware group to every route
-| it contains. The "web" middleware group is defined in your HTTP
-| kernel and includes session state, CSRF protection, and more.
-|
-*/
+    Route::resource('attendees', 'AttendeesController');
+    Route::get('attendees/{attendeeId}/counselor', 'CounselorsController@byAttendee');
+    Route::put('attendees/{attendeeId}/counselor', 'AttendeesController@updateCounselor');
 
-Route::group(['middleware' => ['web']], function () {
-    //
+    Route::resource('counselors', 'CounselorsController');
+    Route::get('counselors/{counselorId}/attendees', 'AttendeesController@byCounselor');
 });
