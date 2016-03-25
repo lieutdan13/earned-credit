@@ -34,16 +34,6 @@ class CounselorsController extends ApiController
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -53,7 +43,7 @@ class CounselorsController extends ApiController
     {
         if(!Input::get('identifier') or !Input::get('first_name') or !Input::get('last_name'))
         {
-            return $this->respondUnprocessableEntity('Parameters failed validation for an counselor.');
+            return $this->respondUnprocessableEntity('Parameters failed validation for a counselor.');
         }
 
         Counselor::create(Input::all());
@@ -86,24 +76,13 @@ class CounselorsController extends ApiController
 
         if(!$counselor)
         {
-            return $this->respondNotFound('Counselor does not exist');
+            return $this->respondNotFound('Counselor does not exist.');
         }
 
         return $this->respond([
             'data' => $this->counselorTransformer->transform($counselor)
         ]);
 
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**

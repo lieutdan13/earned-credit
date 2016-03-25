@@ -23,10 +23,12 @@ class CounselorsTest extends ApiTester
         $this->times(5)->make('App\Counselor');
 
         //act
-        $this->getJson('counselors');
+        $response = $this->getJson('counselors');
 
         //assert
         $this->assertResponseOk();
+        $this->assertObjectHasAttributes($response, 'data');
+        $this->assertCount(5, $response->data);
     }
 
     /**
@@ -58,10 +60,13 @@ class CounselorsTest extends ApiTester
     public function it_throws_a_404_if_a_counselor_is_not_found()
     {
         //act
-        $this->getJson('counselors/x');
+        $response = $this->getJson('counselors/x');
 
         //assert
         $this->assertResponseStatus(404);
+        $this->assertObjectHasAttributes($response, 'error');
+        $this->assertObjectHasAttributes($response->error, 'message');
+        $this->assertContains('Counselor does not exist.', $response->error->message);
     }
 
     /**
@@ -82,9 +87,12 @@ class CounselorsTest extends ApiTester
     public function it_throws_a_422_if_a_new_counselor_request_fails_validation()
     {
         //act
-        $this->getJson('counselors', 'POST');
+        $response = $this->getJson('counselors', 'POST');
 
         //assert
         $this->assertResponseStatus(422);
+        $this->assertObjectHasAttributes($response, 'error');
+        $this->assertObjectHasAttributes($response->error, 'message');
+        $this->assertContains('Parameters failed validation for a counselor.', $response->error->message);
     }
 }
