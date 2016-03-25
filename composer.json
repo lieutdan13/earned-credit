@@ -5,9 +5,10 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
-        "laravel/framework": "5.2.*",
         "cyvelnet/laravel5-fractal": "1.*",
+        "laravel/framework": "5.2.*",
+        "nesbot/carbon": "^1.21",
+        "php": ">=5.5.9",
         "tymon/jwt-auth": "0.5.*"
     },
     "require-dev": {

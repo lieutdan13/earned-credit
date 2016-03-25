@@ -1,4 +1,6 @@
 #TODO
+- create a custom response class that returns the same json format with every request
+- create a custom middleware for JWT that handles JWT exceptions and responds with proper messages.
 - rename the project to be something more generic and clever
   - attendance
   - roll call

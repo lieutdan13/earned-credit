@@ -2,6 +2,9 @@
 
 namespace App;
 
+use DB;
+use Carbon\Carbon;
+
 /**
  * Class Attendee
  */
@@ -16,7 +19,10 @@ class Attendee extends \Eloquent {
      */
     public function counselors()
     {
-        return $this->belongsToMany('App\Counselor')->orderBy('created_at', 'desc');
+        return $this->belongsToMany('App\Counselor')
+            ->whereNull('attendee_counselor.deleted_at')
+            ->withTimestamps()
+            ->orderBy('created_at', 'desc');
     }
 
     /**
@@ -25,5 +31,15 @@ class Attendee extends \Eloquent {
     public function getCounselorAttribute()
     {
         return $this->counselors()->first();
+    }
+
+    public function reassignCounselor($counselor_id)
+    {
+        DB::table('attendee_counselor')
+            ->where('attendee_id', $this->id)
+            ->where('counselor_id', $this->counselor->id)
+            ->whereNull('deleted_at')
+            ->update(array('deleted_at' => Carbon::now()));
+        $this->counselors()->attach([$counselor_id]);
     }
 }

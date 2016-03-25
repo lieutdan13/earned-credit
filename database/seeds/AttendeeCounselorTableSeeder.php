@@ -4,6 +4,7 @@ use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use App\Attendee;
 use App\Counselor;
+use Carbon\Carbon;
 
 class AttendeeCounselorTableSeeder extends Seeder
 {
@@ -23,6 +24,7 @@ class AttendeeCounselorTableSeeder extends Seeder
             DB::table('attendee_counselor')->insert([
                 'attendee_id'  => $attendeeId,
                 'counselor_id' => $faker->randomElement($counselorIds),
+                'created_at'   => Carbon::now(),
             ]);
         }
     }
