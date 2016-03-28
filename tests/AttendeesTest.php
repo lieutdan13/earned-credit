@@ -55,7 +55,13 @@ class AttendeesTest extends ApiTester
 
         //assert
         $this->assertResponseOk();
-        $this->assertObjectHasAttributes($response, 'first_name', 'last_name', 'suffix', 'identifier');
+        $this->assertObjectHasAttributes($response,
+            'id',
+            'first_name',
+            'last_name',
+            'suffix',
+            'identifier'
+        );
     }
 
     /**

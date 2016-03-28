@@ -14,6 +14,7 @@ class AttendeeTransformer extends Transformer
     public function transform($item)
     {
         return [
+            'id'         => $item['id'],
             'identifier' => $item['identifier'],
             'first_name' => $item['first_name'],
             'last_name'  => $item['last_name'],
