@@ -95,4 +95,79 @@ class CounselorsTest extends ApiTester
         $this->assertObjectHasAttributes($response->error, 'message');
         $this->assertContains('Parameters failed validation for a counselor.', $response->error->message);
     }
+
+    /**
+     * @test
+     */
+    public function it_updates_a_counselor_with_a_first_and_last_name()
+    {
+        //arrange
+        $this->make('App\Counselor');
+        $counselor = App\Counselor::first();
+        $old_first_name = $counselor->first_name;
+        $old_last_name = $counselor->last_name;
+
+        //act
+        $response = $this->getJson('counselors/' . $counselor->id, 'PATCH', ['first_name' => 'Test', 'last_name' => 'Tester']);
+        $counselor = App\Counselor::first();
+
+        //assert
+        $this->assertResponseStatus(200);
+        $this->assertObjectHasAttributes($response, 'message');
+        $this->assertContains('The counselor has been successfully updated.', $response->message);
+        $this->assertEquals($counselor->first_name, 'Test');
+        $this->assertEquals($counselor->last_name, 'Tester');
+
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_a_404_if_a_counselor_is_not_found_when_attempting_to_update_a_counselor()
+    {
+        //act
+        $response = $this->getJson('counselors/x', 'PATCH', ['first_name' => 'John', 'last_name' => 'Doe']);
+
+        //assert
+        $this->assertResponseStatus(404);
+        $this->assertObjectHasAttributes($response, 'error');
+        $this->assertObjectHasAttributes($response->error, 'message');
+        $this->assertContains('Counselor does not exist.', $response->error->message);
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_a_counselor()
+    {
+        //arrange
+        $this->make('App\Counselor');
+        $counselor = App\Counselor::first();
+
+        //act
+        $response = $this->getJson('counselors/' . $counselor->id, 'DELETE');
+        $counselor = App\Counselor::onlyTrashed()->find($counselor->id);
+
+        //assert
+        $this->assertResponseStatus(200);
+        $this->assertObjectHasAttributes($response, 'message');
+        $this->assertContains('The counselor has been deleted.', $response->message);
+        $this->assertEquals($counselor->trashed(), True);
+
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_a_404_if_a_counselor_is_not_found_when_attempting_to_delete_it()
+    {
+        //act
+        $response = $this->getJson('counselors/x', 'DELETE');
+
+        //assert
+        $this->assertResponseStatus(404);
+        $this->assertObjectHasAttributes($response, 'error');
+        $this->assertObjectHasAttributes($response->error, 'message');
+        $this->assertContains('Counselor does not exist.', $response->error->message);
+    }
 }

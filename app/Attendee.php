@@ -4,15 +4,24 @@ namespace App;
 
 use DB;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Attendee
  */
 class Attendee extends \Eloquent {
+
+    use SoftDeletes;
+
     /**
      * @var array
      */
-    protected $fillable = ['first_name', 'last_name', 'suffix', 'identifier'];
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'suffix',
+        'identifier'
+    ];
 
     /**
      * @return A relationship of all the counselors

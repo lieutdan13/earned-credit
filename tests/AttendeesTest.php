@@ -193,4 +193,76 @@ class AttendeesTest extends ApiTester
         $this->assertObjectHasAttributes($response->error, 'message');
         $this->assertContains('Attendee does not exist.', $response->error->message);
     }
+
+    /**
+     * @test
+     */
+    public function it_updates_an_attendee_with_a_first_and_last_name()
+    {
+        //arrange
+        $this->make('App\Attendee');
+        $attendee = App\Attendee::first();
+
+        //act
+        $response = $this->getJson('attendees/' . $attendee->id, 'PATCH', ['first_name' => 'Test', 'last_name' => 'Tester']);
+        $attendee = App\Attendee::first();
+
+        //assert
+        $this->assertResponseStatus(200);
+        $this->assertObjectHasAttributes($response, 'message');
+        $this->assertContains('The attendee has been successfully updated.', $response->message);
+        $this->assertEquals($attendee->first_name, 'Test');
+        $this->assertEquals($attendee->last_name, 'Tester');
+
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_a_404_if_an_attendee_is_not_found_when_attempting_to_update_a_attendee()
+    {
+        //act
+        $response = $this->getJson('attendees/x', 'PATCH', ['first_name' => 'John', 'last_name' => 'Doe']);
+
+        //assert
+        $this->assertResponseStatus(404);
+        $this->assertObjectHasAttributes($response, 'error');
+        $this->assertObjectHasAttributes($response->error, 'message');
+        $this->assertContains('Attendee does not exist.', $response->error->message);
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_an_attendee()
+    {
+        //arrange
+        $this->make('App\Attendee');
+        $attendee = App\Attendee::first();
+
+        //act
+        $response = $this->getJson('attendees/' . $attendee->id, 'DELETE');
+        $attendee = App\Attendee::onlyTrashed()->find($attendee->id);
+
+        //assert
+        $this->assertResponseStatus(200);
+        $this->assertObjectHasAttributes($response, 'message');
+        $this->assertContains('The attendee has been deleted.', $response->message);
+        $this->assertEquals($attendee->trashed(), True);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_a_404_if_an_attendee_is_not_found_when_attempting_to_delete_it()
+    {
+        //act
+        $response = $this->getJson('attendees/x', 'DELETE');
+
+        //assert
+        $this->assertResponseStatus(404);
+        $this->assertObjectHasAttributes($response, 'error');
+        $this->assertObjectHasAttributes($response->error, 'message');
+        $this->assertContains('Attendee does not exist.', $response->error->message);
+    }
 }

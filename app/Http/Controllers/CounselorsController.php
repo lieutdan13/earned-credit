@@ -88,13 +88,25 @@ class CounselorsController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
-        //
+        $counselor = Counselor::find($id);
+
+        if(!$counselor)
+        {
+            return $this->respondNotFound('Counselor does not exist.');
+        }
+
+        if($counselor->update(Input::all()))
+        {
+            return $this->respond(['message' => 'The counselor has been successfully updated.']);
+        }
+        else {
+            return $this->respondUnprocessableEntity('There was a problem updating the counselor.');
+        }
     }
 
     /**
@@ -105,6 +117,19 @@ class CounselorsController extends ApiController
      */
     public function destroy($id)
     {
-        //
+        $counselor = Counselor::find($id);
+
+        if(!$counselor)
+        {
+            return $this->respondNotFound('Counselor does not exist.');
+        }
+
+        if($counselor->delete())
+        {
+            return $this->respond(['message' => 'The counselor has been deleted.']);
+        }
+        else {
+            return $this->respondUnprocessableEntity('There was a problem deleting the counselor.');
+        }
     }
 }
