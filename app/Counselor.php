@@ -2,10 +2,15 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 /**
  * Class Counselor
  */
 class Counselor extends \Eloquent {
+
+    use SoftDeletes;
+
     /**
      * @var array
      */

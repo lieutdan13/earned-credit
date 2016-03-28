@@ -34,16 +34,6 @@ class CounselorsController extends ApiController
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -53,7 +43,7 @@ class CounselorsController extends ApiController
     {
         if(!Input::get('identifier') or !Input::get('first_name') or !Input::get('last_name'))
         {
-            return $this->respondUnprocessableEntity('Parameters failed validation for an counselor.');
+            return $this->respondUnprocessableEntity('Parameters failed validation for a counselor.');
         }
 
         Counselor::create(Input::all());
@@ -86,7 +76,7 @@ class CounselorsController extends ApiController
 
         if(!$counselor)
         {
-            return $this->respondNotFound('Counselor does not exist');
+            return $this->respondNotFound('Counselor does not exist.');
         }
 
         return $this->respond([
@@ -96,26 +86,27 @@ class CounselorsController extends ApiController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
-        //
+        $counselor = Counselor::find($id);
+
+        if(!$counselor)
+        {
+            return $this->respondNotFound('Counselor does not exist.');
+        }
+
+        if($counselor->update(Input::all()))
+        {
+            return $this->respond(['message' => 'The counselor has been successfully updated.']);
+        }
+        else {
+            return $this->respondUnprocessableEntity('There was a problem updating the counselor.');
+        }
     }
 
     /**
@@ -126,6 +117,19 @@ class CounselorsController extends ApiController
      */
     public function destroy($id)
     {
-        //
+        $counselor = Counselor::find($id);
+
+        if(!$counselor)
+        {
+            return $this->respondNotFound('Counselor does not exist.');
+        }
+
+        if($counselor->delete())
+        {
+            return $this->respond(['message' => 'The counselor has been deleted.']);
+        }
+        else {
+            return $this->respondUnprocessableEntity('There was a problem deleting the counselor.');
+        }
     }
 }

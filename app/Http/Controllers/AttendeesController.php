@@ -89,13 +89,25 @@ class AttendeesController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
-        //
+        $attendee = Attendee::find($id);
+
+        if(!$attendee)
+        {
+            return $this->respondNotFound('Attendee does not exist.');
+        }
+
+        if($attendee->update(Input::all()))
+        {
+            return $this->respond(['message' => 'The attendee has been successfully updated.']);
+        }
+        else {
+            return $this->respondUnprocessableEntity('There was a problem updating the attendee.');
+        }
     }
 
     /**
@@ -145,6 +157,19 @@ class AttendeesController extends ApiController
      */
     public function destroy($id)
     {
-        //
+        $attendee = Attendee::find($id);
+
+        if(!$attendee)
+        {
+            return $this->respondNotFound('Attendee does not exist.');
+        }
+
+        if($attendee->delete())
+        {
+            return $this->respond(['message' => 'The attendee has been deleted.']);
+        }
+        else {
+            return $this->respondUnprocessableEntity('There was a problem deleting the attendee.');
+        }
     }
 }
