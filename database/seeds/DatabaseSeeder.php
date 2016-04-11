@@ -10,6 +10,7 @@ class DatabaseSeeder extends Seeder
         'counselors',
         'programs',
         'program_levels',
+        'attendee_program',
         'users',
     ];
 
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AttendeeCounselorTableSeeder::class);
         $this->call(ProgramsTableSeeder::class);
         $this->call(ProgramLevelsTableSeeder::class);
+        $this->call(AttendeeProgramTableSeeder::class);
         $this->call(UsersTableSeeder::class);
     }
 

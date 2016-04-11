@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Input;
 
 use App\Attendee;
 use App\Counselor;
+use App\Program;
 use App\Transformers\AttendeeTransformer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -51,10 +52,9 @@ class AttendeesController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
         if(!Input::get('first_name') or !Input::get('last_name') or !Input::get('identifier'))
         {
@@ -113,11 +113,10 @@ class AttendeesController extends ApiController
     /**
      * Update the counselor associated with the attendee.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateCounselor(Request $request, $id)
+    public function updateCounselor($id)
     {
         $attendee = Attendee::find($id);
 
@@ -147,6 +146,44 @@ class AttendeesController extends ApiController
         }
 
         return $this->respond(['message' => "The attendee/counselor assignment remains unchanged."]);
+    }
+
+    /**
+     * Add a program associated with the attendee.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function storeProgram($id)
+    {
+        $attendee = Attendee::find($id);
+
+        if(!$attendee)
+        {
+            return $this->respondNotFound('Attendee does not exist.');
+        }
+
+        $programId = Input::get('program_id');
+        if(!$programId)
+        {
+            return $this->respondUnprocessableEntity('Parameters failed validation for an attendee.');
+        }
+
+        try {
+            $program = Program::findOrFail($programId);
+        } catch (ModelNotFoundException $e) {
+            return $this->respondUnprocessableEntity('Program provided does not exist.');
+        }
+
+        //We pass validation. Now assign the attendee to the program.
+        $existingPrograms = $attendee->programs()->getRelatedIds()->all();
+        if (in_array($programId, $existingPrograms))
+        {
+            return $this->respond(['message' => "The attendee is already in the program."]);
+        }
+
+        $attendee->programs()->attach($programId, Input::all());
+        return $this->respond(['message' => "The attendee has been added to the program."]);
     }
 
     /**

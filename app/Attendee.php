@@ -31,7 +31,7 @@ class Attendee extends \Eloquent {
         return $this->belongsToMany('App\Counselor')
             ->whereNull('attendee_counselor.deleted_at')
             ->withTimestamps()
-            ->orderBy('created_at', 'desc');
+            ->orderBy('attendee_counselor.created_at', 'desc');
     }
 
     /**
@@ -50,5 +50,16 @@ class Attendee extends \Eloquent {
             ->whereNull('deleted_at')
             ->update(array('deleted_at' => Carbon::now()));
         $this->counselors()->attach([$counselor_id]);
+    }
+
+    /**
+     * @return A relationship of all the programs
+     */
+    public function programs()
+    {
+        return $this->belongsToMany('App\Program')
+            ->whereNull('attendee_program.deleted_at')
+            ->withTimestamps()
+            ->orderBy('attendee_program.created_at', 'asc');
     }
 }

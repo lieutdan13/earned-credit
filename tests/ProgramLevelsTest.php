@@ -83,13 +83,13 @@ class ProgramLevelsTest extends ApiTester
     /**
      * @test
      */
-    public function it_throws_a_400_when_trying_to_create_a_program_level_with_an_invalid_program_id()
+    public function it_throws_a_404_when_trying_to_create_a_program_level_with_an_invalid_program_id()
     {
         //act
         $this->getJson('program_levels', 'POST', ['name' => 'Test Program Level', 'program_id' => 'x']);
 
         //assert
-        $this->assertResponseStatus(400);
+        $this->assertResponseStatus(404);
     }
 
     /**

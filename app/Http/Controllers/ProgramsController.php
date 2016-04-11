@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
+use App\Attendee;
 use App\Program;
 use App\Transformers\ProgramTransformer;
 
@@ -26,6 +27,20 @@ class ProgramsController extends ApiController
     public function index()
     {
         $programs = Program::all();
+
+        return $this->respond([
+            'data' => $this->programTransformer->transformCollection($programs->all())
+        ]);
+    }
+
+    /**
+     * Displays the programs that an attendee belongs to.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function byAttendee($attendeeId = null)
+    {
+        $programs = $attendeeId ? Attendee::findOrFail($attendeeId)->programs : null;
 
         return $this->respond([
             'data' => $this->programTransformer->transformCollection($programs->all())

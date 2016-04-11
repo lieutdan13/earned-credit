@@ -49,7 +49,7 @@ class ProgramLevelsController extends ApiController
         try {
             $program = Program::findOrFail(Input::get('program_id'));
         } catch (ModelNotFoundException $e) {
-            return $this->respondUnprocessableEntity('Program provided does not exist');
+            return $this->respondNotFound('Program provided does not exist');
         }
 
         ProgramLevel::create(Input::all());
