@@ -60,6 +60,7 @@ class Attendee extends \Eloquent {
         return $this->belongsToMany('App\Program')
             ->whereNull('attendee_program.deleted_at')
             ->withTimestamps()
+            ->withPivot('start_date', 'completion_date', 'termination_date')
             ->orderBy('attendee_program.created_at', 'asc');
     }
 }
