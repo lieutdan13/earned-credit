@@ -53,14 +53,14 @@ class Attendee extends \Eloquent {
     }
 
     /**
-     * @return A relationship of all the programs
+     * @return A relationship of all the program enrollments
      */
-    public function programs()
+    public function enrollments()
     {
-        return $this->belongsToMany('App\Program')
-            ->whereNull('attendee_program.deleted_at')
+        return $this->hasMany('App\Enrollment')
+            ->whereNull('enrollments.deleted_at')
             ->withTimestamps()
             ->withPivot('start_date', 'completion_date', 'termination_date')
-            ->orderBy('attendee_program.created_at', 'asc');
+            ->orderBy('enrollments.created_at', 'asc');
     }
 }

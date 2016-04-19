@@ -149,44 +149,6 @@ class AttendeesController extends ApiController
     }
 
     /**
-     * Add a program associated with the attendee.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function storeProgram($id)
-    {
-        $attendee = Attendee::find($id);
-
-        if(!$attendee)
-        {
-            return $this->respondNotFound('Attendee does not exist.');
-        }
-
-        $programId = Input::get('program_id');
-        if(!$programId)
-        {
-            return $this->respondUnprocessableEntity('Parameters failed validation for an attendee.');
-        }
-
-        try {
-            $program = Program::findOrFail($programId);
-        } catch (ModelNotFoundException $e) {
-            return $this->respondUnprocessableEntity('Program provided does not exist.');
-        }
-
-        //We pass validation. Now assign the attendee to the program.
-        $existingPrograms = $attendee->programs()->getRelatedIds()->all();
-        if (in_array($programId, $existingPrograms))
-        {
-            return $this->respond(['message' => "The attendee is already in the program."]);
-        }
-
-        $attendee->programs()->attach($programId, Input::all());
-        return $this->respond(['message' => "The attendee has been added to the program."]);
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id

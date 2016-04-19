@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAttendeeProgramTable extends Migration
+class CreateEnrollmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateAttendeeProgramTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendee_program', function($table)
+        Schema::create('enrollments', function($table)
         {
             $table->increments('id');
             $table->integer('attendee_id')->unsigned()->index();
@@ -34,6 +34,6 @@ class CreateAttendeeProgramTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendee_program');
+        Schema::dropIfExists('enrollments');
     }
 }

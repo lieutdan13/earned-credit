@@ -34,20 +34,6 @@ class ProgramsController extends ApiController
     }
 
     /**
-     * Displays the programs that an attendee belongs to.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function byAttendee($attendeeId = null)
-    {
-        $programs = $attendeeId ? Attendee::findOrFail($attendeeId)->programs : null;
-
-        return $this->respond([
-            'data' => $this->programTransformer->transformCollection($programs->all())
-        ]);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

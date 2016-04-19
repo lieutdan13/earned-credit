@@ -13,26 +13,10 @@ class ProgramTransformer extends Transformer
      */
     public function transform($item)
     {
-        $data = [
+        return [
             'id'   => $item['id'],
             'name' => $item['name'],
         ];
-        if(isset($item['pivot']))
-        {
-            if(isset($item['pivot']['start_date']))
-            {
-                $data['start_date'] = $item['pivot']['start_date'];
-            }
-            if(isset($item['pivot']['completion_date']))
-            {
-                $data['completion_date'] = $item['pivot']['completion_date'];
-            }
-            if(isset($item['pivot']['termination_date']))
-            {
-                $data['termination_date'] = $item['pivot']['termination_date'];
-            }
-        }
-        return $data;
     }
 
 }

@@ -6,7 +6,7 @@ use App\Attendee;
 use App\Program;
 use Carbon\Carbon;
 
-class AttendeeProgramTableSeeder extends Seeder
+class EnrollmentsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -30,7 +30,7 @@ class AttendeeProgramTableSeeder extends Seeder
             {
                 $termination_date = $faker->dateTimeBetween($startDate = '-6 months');
             }
-            DB::table('attendee_program')->insert([
+            DB::table('enrollments')->insert([
                 'attendee_id'  => $attendeeId,
                 'program_id' => $faker->randomElement($programIds),
                 'start_date'  => $faker->dateTimeBetween($startDate = '-12 months'),
