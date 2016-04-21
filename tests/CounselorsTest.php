@@ -45,6 +45,7 @@ class CounselorsTest extends ApiTester
         //assert
         $this->assertResponseOk();
         $this->assertObjectHasAttributes($counselor,
+            'id',
             'identifier',
             'first_name',
             'last_name',

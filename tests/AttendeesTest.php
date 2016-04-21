@@ -15,16 +15,6 @@ class AttendeesTest extends ApiTester
         ];
     }
 
-    public function getCounselorStub()
-    {
-        return [
-            'identifier' => $this->faker->regexify('[0-9]{10}'),
-            'first_name' => $this->faker->firstName(),
-            'last_name'  => $this->faker->lastName(),
-            'hire_date'  => $this->faker->dateTimeBetween($startDate = '-3 years'),
-        ];
-    }
-
     /**
      * @test
      */
@@ -55,7 +45,13 @@ class AttendeesTest extends ApiTester
 
         //assert
         $this->assertResponseOk();
-        $this->assertObjectHasAttributes($response, 'first_name', 'last_name', 'suffix', 'identifier');
+        $this->assertObjectHasAttributes($response,
+            'id',
+            'first_name',
+            'last_name',
+            'suffix',
+            'identifier'
+        );
     }
 
     /**
@@ -99,99 +95,6 @@ class AttendeesTest extends ApiTester
         $this->assertObjectHasAttributes($response->error, 'message');
         $this->assertContains('Parameters failed validation for an attendee.', $response->error->message);
 
-    }
-
-    /**
-     * @test
-     */
-    public function it_updates_an_attendee_counselor_assignment()
-    {
-        //arrange
-        $this->make('App\Attendee');
-        $this->times(2)->make('App\Counselor', $this->getCounselorStub());
-        $attendee = App\Attendee::first();
-        $attendee->counselors()->attach([1]);
-
-        //act
-        $response = $this->getJson('attendees/' . $attendee->id . '/counselor', 'PUT', ['counselor_id' => 2]);
-
-        //assert
-        $this->assertResponseStatus(200);
-        $this->assertObjectHasAttributes($response, 'message');
-        $this->assertContains('The attendee/counselor assignment has been updated.', $response->message);
-    }
-
-    /**
-     * @test
-     */
-    public function it_keeps_the_attendee_counselor_assignment_unchanged()
-    {
-        //arrange
-        $this->make('App\Attendee');
-        $this->times(1)->make('App\Counselor', $this->getCounselorStub());
-        $attendee = App\Attendee::first();
-        $attendee->counselors()->attach([1]);
-
-        //act
-        $response = $this->getJson('attendees/' . $attendee->id . '/counselor', 'PUT', ['counselor_id' => 1]);
-
-        //assert
-        $this->assertResponseStatus(200);
-        $this->assertObjectHasAttributes($response, 'message');
-        $this->assertContains('The attendee/counselor assignment remains unchanged.', $response->message);
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_a_422_when_failing_to_find_a_counselor_while_updating_an_attendee_counselor_assignment()
-    {
-        //arrange
-        $this->make('App\Attendee');
-        $attendee = App\Attendee::first();
-
-        //act
-        $response = $this->getJson('attendees/' . $attendee->id . '/counselor', 'PUT', ['counselor_id' => 1]);
-
-        //assert
-        $this->assertResponseStatus(422);
-        $this->assertObjectHasAttributes($response, 'error');
-        $this->assertObjectHasAttributes($response->error, 'message');
-        $this->assertContains('Counselor provided does not exist', $response->error->message);
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_a_422_when_validation_fails_while_updating_an_attendee_counselor_assignment()
-    {
-        //arrange
-        $this->make('App\Attendee');
-        $attendee = App\Attendee::first();
-
-        //act
-        $response = $this->getJson('attendees/' . $attendee->id . '/counselor', 'PUT', []);
-
-        //assert
-        $this->assertResponseStatus(422);
-        $this->assertObjectHasAttributes($response, 'error');
-        $this->assertObjectHasAttributes($response->error, 'message');
-        $this->assertContains('Parameters failed validation for an attendee.', $response->error->message);
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_a_404_when_an_attendee_does_not_exist_while_updating_an_attendee_counselor_assignment()
-    {
-        //act
-        $response = $this->getJson('attendees/1/counselor', 'PUT', ['counselor_id' => 1]);
-
-        //assert
-        $this->assertResponseStatus(404);
-        $this->assertObjectHasAttributes($response, 'error');
-        $this->assertObjectHasAttributes($response->error, 'message');
-        $this->assertContains('Attendee does not exist.', $response->error->message);
     }
 
     /**
@@ -258,6 +161,122 @@ class AttendeesTest extends ApiTester
     {
         //act
         $response = $this->getJson('attendees/x', 'DELETE');
+
+        //assert
+        $this->assertResponseStatus(404);
+        $this->assertObjectHasAttributes($response, 'error');
+        $this->assertObjectHasAttributes($response->error, 'message');
+        $this->assertContains('Attendee does not exist.', $response->error->message);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_the_counselor_that_an_attendee_is_assigned_to()
+    {
+        //arrange
+        $counselorTest = new CounselorsTest();
+        $this->make('App\Attendee');
+        $this->times(1)->make('App\Counselor', $counselorTest->getStub());
+        $attendee = App\Attendee::first();
+        $attendee->counselors()->attach([1]);
+
+        //act
+        $response = $this->getJson('attendees/' . $attendee->id . '/counselor', 'GET');
+
+        //assert
+        $this->assertResponseStatus(200);
+        $this->assertObjectHasAttributes($response, 'data');
+        $this->assertObjectHasAttributes($response->data, 'termination_date');
+    }
+
+    /**
+     * @test
+     */
+    public function it_updates_an_attendee_counselor_assignment()
+    {
+        //arrange
+        $counselorTest = new CounselorsTest();
+        $this->make('App\Attendee');
+        $this->times(2)->make('App\Counselor', $counselorTest->getStub());
+        $attendee = App\Attendee::first();
+        $attendee->counselors()->attach([1]);
+
+        //act
+        $response = $this->getJson('attendees/' . $attendee->id . '/counselor', 'PUT', ['counselor_id' => 2]);
+
+        //assert
+        $this->assertResponseStatus(200);
+        $this->assertObjectHasAttributes($response, 'message');
+        $this->assertContains('The attendee/counselor assignment has been updated.', $response->message);
+    }
+
+    /**
+     * @test
+     */
+    public function it_keeps_the_attendee_counselor_assignment_unchanged()
+    {
+        //arrange
+        $counselorTest = new CounselorsTest();
+        $this->make('App\Attendee');
+        $this->times(1)->make('App\Counselor', $counselorTest->getStub());
+        $attendee = App\Attendee::first();
+        $attendee->counselors()->attach([1]);
+
+        //act
+        $response = $this->getJson('attendees/' . $attendee->id . '/counselor', 'PUT', ['counselor_id' => 1]);
+
+        //assert
+        $this->assertResponseStatus(200);
+        $this->assertObjectHasAttributes($response, 'message');
+        $this->assertContains('The attendee/counselor assignment remains unchanged.', $response->message);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_a_422_when_failing_to_find_a_counselor_while_updating_an_attendee_counselor_assignment()
+    {
+        //arrange
+        $this->make('App\Attendee');
+        $attendee = App\Attendee::first();
+
+        //act
+        $response = $this->getJson('attendees/' . $attendee->id . '/counselor', 'PUT', ['counselor_id' => 1]);
+
+        //assert
+        $this->assertResponseStatus(422);
+        $this->assertObjectHasAttributes($response, 'error');
+        $this->assertObjectHasAttributes($response->error, 'message');
+        $this->assertContains('Counselor provided does not exist', $response->error->message);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_a_422_when_validation_fails_while_updating_an_attendee_counselor_assignment()
+    {
+        //arrange
+        $this->make('App\Attendee');
+        $attendee = App\Attendee::first();
+
+        //act
+        $response = $this->getJson('attendees/' . $attendee->id . '/counselor', 'PUT', []);
+
+        //assert
+        $this->assertResponseStatus(422);
+        $this->assertObjectHasAttributes($response, 'error');
+        $this->assertObjectHasAttributes($response->error, 'message');
+        $this->assertContains('Parameters failed validation for an attendee.', $response->error->message);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_a_404_when_an_attendee_does_not_exist_while_updating_an_attendee_counselor_assignment()
+    {
+        //act
+        $response = $this->getJson('attendees/1/counselor', 'PUT', ['counselor_id' => 1]);
 
         //assert
         $this->assertResponseStatus(404);

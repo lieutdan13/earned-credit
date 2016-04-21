@@ -23,4 +23,9 @@ Route::group(['middleware' => 'api'], function()
 
     Route::resource('counselors', 'CounselorsController');
     Route::get('counselors/{counselorId}/attendees', 'AttendeesController@byCounselor');
+
+    Route::resource('enrollments', 'EnrollmentsController');
+
+    Route::resource('programs', 'ProgramsController');
+    Route::resource('program_levels', 'ProgramLevelsController');
 });

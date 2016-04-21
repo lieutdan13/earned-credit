@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Attendee;
-use App\Counselor;
-use App\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -11,6 +8,9 @@ class DatabaseSeeder extends Seeder
         'attendees',
         'attendee_counselor',
         'counselors',
+        'programs',
+        'program_levels',
+        'enrollments',
         'users',
     ];
 
@@ -26,6 +26,9 @@ class DatabaseSeeder extends Seeder
         $this->call(AttendeesTableSeeder::class);
         $this->call(CounselorsTableSeeder::class);
         $this->call(AttendeeCounselorTableSeeder::class);
+        $this->call(ProgramsTableSeeder::class);
+        $this->call(ProgramLevelsTableSeeder::class);
+        $this->call(EnrollmentsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
     }
 

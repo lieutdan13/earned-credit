@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Input;
 
 use App\Attendee;
 use App\Counselor;
+use App\Program;
 use App\Transformers\AttendeeTransformer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -51,10 +52,9 @@ class AttendeesController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
         if(!Input::get('first_name') or !Input::get('last_name') or !Input::get('identifier'))
         {
@@ -113,11 +113,10 @@ class AttendeesController extends ApiController
     /**
      * Update the counselor associated with the attendee.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateCounselor(Request $request, $id)
+    public function updateCounselor($id)
     {
         $attendee = Attendee::find($id);
 
