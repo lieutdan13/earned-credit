@@ -14,7 +14,7 @@ use App\Http\Controllers\ApiController;
 Route::post('auth', ['uses' => 'AuthenticateController@authenticate']);
 Route::post('auth/refresh-token', ['uses' => 'AuthenticateController@refresh_token']);
 
-Route::group(['middleware' => 'api'], function()
+Route::group(['prefix' => 'api/v1', 'middleware' => 'api'], function()
 {
 
     Route::resource('attendees', 'AttendeesController');
