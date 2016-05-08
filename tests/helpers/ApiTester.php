@@ -12,7 +12,12 @@ abstract class ApiTester extends TestCase
     use WithoutMiddleware;
 
     /**
-     * @var Faker\Factory
+     * @var string uriPrefix
+     */
+    protected $uriPrefix = '';
+
+    /**
+     * @var Faker\Factory faker
      */
     protected $faker;
 
@@ -24,6 +29,11 @@ abstract class ApiTester extends TestCase
         $this->faker = Faker::create();
     }
 
+    public function setUriPrefix($uriPrefix = 'api/v1/')
+    {
+        $this->uriPrefix = $uriPrefix;
+    }
+
     /**
      *
      */
@@ -31,6 +41,7 @@ abstract class ApiTester extends TestCase
     {
         parent::setUp();
         Artisan::call('migrate');
+        $this->setUriPrefix();
     }
 
     /**
@@ -50,7 +61,7 @@ abstract class ApiTester extends TestCase
      */
     protected function getJson($uri, $method = 'GET', $parameters = [], $cookies = [], $files = [], $server = [])
     {
-        return json_decode($this->call($method, $uri, $parameters, $cookies, $files, $server)->getContent());
+        return json_decode($this->call($method, $this->uriPrefix . $uri, $parameters, $cookies, $files, $server)->getContent());
     }
 
 

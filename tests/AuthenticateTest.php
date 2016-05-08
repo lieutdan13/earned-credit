@@ -14,6 +14,24 @@ class AuthenticateTest extends ApiTester
         //DO NOTHING
     }
 
+    /**
+     *
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->setUriPrefix('');
+    }
+
+    /**
+     *
+     */
+    public function tearDown()
+    {
+        $this->setUriPrefix('');
+        parent::tearDown();
+    }
+
     public function getStub()
     {
         return [
@@ -96,6 +114,7 @@ class AuthenticateTest extends ApiTester
         $this->make('App\User', [
             'email' => $this->getStub()['email'],
             'password' => Hash::make($this->getStub()['password'])]);
+        $this->setUriPrefix();
 
         //act
         $response = $this->getJson('counselors', 'GET', ['token' => 'bad-token']);
