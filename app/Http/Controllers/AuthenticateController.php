@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Transformers\UserTransformer;
+use Illuminate\Http\Request;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
-use Illuminate\Http\Request;
 
 class AuthenticateController extends ApiController
 {
+
+    protected $userTransformer;
+
+    function __construct(UserTransformer $userTransformer)
+    {
+        $this->userTransformer = $userTransformer;
+    }
+
     public function authenticate(Request $request)
     {
         // grab credentials from the request
@@ -28,10 +37,19 @@ class AuthenticateController extends ApiController
         return response()->json(compact('token'));
     }
 
-    public function refresh_token(Request $request)
+    public function refresh_token()
     {
         $token = JWTAuth::parseToken()->refresh();
         $token = JWTAuth::refresh($token);
         return response()->json(compact('token'));
+    }
+
+    public function getAuthenticatedUser()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        return $this->respond([
+            'data' => $this->userTransformer->transform($user)
+        ]);
     }
 }

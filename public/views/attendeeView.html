@@ -1,0 +1,23 @@
+<div class="col-sm-12">
+    <div class="well" data-ng-init="attendee.getAttendees()">
+        <h3>Attendees</h3>
+        <div class="table-responsive" ng-if="attendee.attendees">
+            <table class="table table-striped">
+                <tr>
+                    <th>Identifier</th>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                </tr>
+                <tr ng-repeat="attendee in attendee.attendees">
+                    <td>{{attendee.identifier}}</td>
+                    <td>{{attendee.last_name}}</td>
+                    <td>{{attendee.first_name}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="alert alert-danger" ng-if="attendee.error">
+            <strong>There was an error: </strong> {{attendee.error.error}}
+            <br>Please go back and login again
+        </div>
+    </div>
+</div>

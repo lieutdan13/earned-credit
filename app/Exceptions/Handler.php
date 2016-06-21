@@ -51,11 +51,11 @@ class Handler extends ExceptionHandler
         $message = 'Sorry, something went wrong.';
         $extra = [];
 
-        if ($e instanceof Tymon\JWTAuth\Exceptions\TokenExpiredException) {
+        if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
             return $api->respondUnauthorizedError("token expired");
-        } else if ($e instanceof Tymon\JWTAuth\Exceptions\TokenInvalidException) {
+        } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
             return $api->respondBadRequestError("token invalid");
-        } else if ($e instanceof Tymon\JWTAuth\Exceptions\JWTException) {
+        } else if ($e instanceof \Tymon\JWTAuth\Exceptions\JWTException) {
             return $api->respondUnauthorizedError("token absent");
         } else if ($e instanceof NotFoundHttpException) {
             $message = "The URI requested is invalid or the resource requested does not exist";

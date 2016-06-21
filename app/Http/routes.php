@@ -1,5 +1,4 @@
 <?php
-use App\Http\Controllers\ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,21 +10,30 @@ use App\Http\Controllers\ApiController;
 | and give it the controller to call when that URI is requested.
 |
 */
-Route::post('auth', ['uses' => 'AuthenticateController@authenticate']);
-Route::post('auth/refresh-token', ['uses' => 'AuthenticateController@refresh_token']);
 
-Route::group(['prefix' => 'api/v1', 'middleware' => 'api'], function()
+include 'routes.frontend.php';
+
+
+
+Route::group(['prefix' => 'api/v1'], function()
 {
+    Route::post('authenticate', ['uses' => 'AuthenticateController@authenticate']);
+    Route::get('authenticate/user', ['uses' => 'AuthenticateController@getAuthenticatedUser']);
+    Route::post('authenticate/refresh-token', ['uses' => 'AuthenticateController@refresh_token']);
 
-    Route::resource('attendees', 'AttendeesController');
-    Route::get('attendees/{attendeeId}/counselor', 'CounselorsController@byAttendee');
-    Route::put('attendees/{attendeeId}/counselor', 'AttendeesController@updateCounselor');
+    Route::group(['middleware' => 'api'], function()
+    {
 
-    Route::resource('counselors', 'CounselorsController');
-    Route::get('counselors/{counselorId}/attendees', 'AttendeesController@byCounselor');
+        Route::resource('attendees', 'AttendeesController');
+        Route::get('attendees/{attendeeId}/counselor', 'CounselorsController@byAttendee');
+        Route::put('attendees/{attendeeId}/counselor', 'AttendeesController@updateCounselor');
 
-    Route::resource('enrollments', 'EnrollmentsController');
+        Route::resource('counselors', 'CounselorsController');
+        Route::get('counselors/{counselorId}/attendees', 'AttendeesController@byCounselor');
 
-    Route::resource('programs', 'ProgramsController');
-    Route::resource('program_levels', 'ProgramLevelsController');
+        Route::resource('enrollments', 'EnrollmentsController');
+
+        Route::resource('programs', 'ProgramsController');
+        Route::resource('program_levels', 'ProgramLevelsController');
+    });
 });

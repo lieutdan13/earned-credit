@@ -75,7 +75,7 @@ abstract class ApiTester extends TestCase
         if (!is_null($user)) {
             $token = JWTAuth::fromUser($user);
             JWTAuth::setToken($token);
-            $headers['Authorization'] = 'Bearer '.$token;
+            $headers['HTTP_AUTHORIZATION'] = 'Bearer '. (string) $token;
         }
 
         return $headers;
